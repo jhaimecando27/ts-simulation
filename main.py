@@ -1,9 +1,10 @@
 import sys
 import time
 import os
-from statistics import mean, stdev
+from statistics import mean
 from datetime import datetime
 from typing import Any, List, Tuple
+import numpy as np
 
 import config
 from algorithms.current import core1, core2, core3
@@ -49,17 +50,14 @@ def run_core_simulation(core_module: Any, core_name: str) -> None:
             soln_lst.sort()
 
             avg_soln: float = round(mean(soln_lst), 2)
-            best_soln: float = round(min(soln_lst), 2)
-            worst_soln: float = round(max(soln_lst), 2)
-            dif_soln: float = round(((worst_soln - best_soln) / best_soln) * 100, 2)
             avg_time: float = round(mean(list_time), 2)
-            std_dev: float = round(stdev(soln_lst), 2) if len(soln_lst) > 1 else 0
+            data = np.array(soln_lst)
+            cv = round(np.std(data) / np.mean(data), 2)
 
             output += f"POI: {config.pois[n]} | Tenure: {config.tenures[j]}\n"
             output += f"avg soln: {avg_soln}\n"
-            output += f"dif: {dif_soln}\n"
             output += f"avg time: {avg_time}\n"
-            output += f"std dev: {std_dev}\n"
+            output += f"DS (CV): {cv}\n"
             output += "================\n\n"
 
     print()
@@ -100,17 +98,14 @@ def run_hybrid_simulation() -> None:
         soln_lst.sort()
 
         avg_soln: float = round(mean(soln_lst), 2)
-        best_soln: float = round(min(soln_lst), 2)
-        worst_soln: float = round(max(soln_lst), 2)
-        dif_soln: float = round(((worst_soln - best_soln) / best_soln) * 100, 2)
         avg_time: float = round(mean(list_time), 2)
-        std_dev: float = round(stdev(soln_lst), 2) if len(soln_lst) > 1 else 0
+        data = np.array(soln_lst)
+        cv = round(np.std(data) / np.mean(data), 2)
 
         output += f"POI: {config.pois[n]}\n"
         output += f"avg soln: {avg_soln}\n"
-        output += f"dif: {dif_soln}\n"
         output += f"avg time: {avg_time}\n"
-        output += f"std dev: {std_dev}\n"
+        output += f"DS (CV): {cv}\n"
         output += "================\n\n"
 
     print()
