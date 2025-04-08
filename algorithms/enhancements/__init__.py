@@ -131,30 +131,26 @@ def wave_resonance_perturbation(
     soln_best: List[int],
     stagnant_ctr: int,
 ) -> List[int]:
-    n: int = len(soln_curr)
 
     progress_metrics: dict[str, float] = {
         "iter_progress": iter_ctr / iter_max,
         "stagnation_factor": min(1, stagnant_ctr / iter_max),
-        "scale_factor": 1 + (n // 10) * 0.5,
     }
 
     perturbation_intensity: float = (
         progress_metrics["iter_progress"] + progress_metrics["stagnation_factor"]
-    ) * progress_metrics["scale_factor"]
+    )
 
     wave_amplitude: int = max(
         1,
         int(
-            n
-            * (1 - perturbation_intensity)
+            (1 - perturbation_intensity)
             * (1 + stagnant_ctr / iter_ctr)
-            * (1 + math.log(n) / 10)
         ),
     )
 
     resonance_factor: float = math.sin(
-        perturbation_intensity * math.pi * 2 * (1 + math.log(n) / 10)
+        perturbation_intensity * math.pi
     )
 
     perturbed_soln: List[int] = soln_curr.copy()
@@ -162,13 +158,11 @@ def wave_resonance_perturbation(
     for _ in range(wave_amplitude):
         wave_centers: List[int] = [
             int(
-                n
-                * abs(
+                abs(
                     math.sin(
                         i
                         * resonance_factor
                         * (1 + stagnant_ctr / iter_max)
-                        * (1 + math.log(n) / 10)
                     )
                 )
             )
@@ -182,20 +176,17 @@ def wave_resonance_perturbation(
                     wave_amplitude
                     * (1 - abs(resonance_factor))
                     * (1 + stagnant_ctr / iter_max)
-                    * (1 + math.log(n) / 10)
                 ),
             )
 
             swap_candidates: set[int] = set()
             for offset in range(-wave_radius, wave_radius + 1):
-                candidate: int = (center + offset) % n
+                candidate: int = (center + offset)
                 swap_candidates.add(candidate)
 
-            # Unique swap strategy
             if len(swap_candidates) > 1:
                 swap_point1, swap_point2 = random.sample(list(swap_candidates), 2)
 
-                # Swap with probability based on solution quality
                 swap_probability = max(0.3, 1 - val(perturbed_soln) / val(soln_best))
 
                 if random.random() < swap_probability:
