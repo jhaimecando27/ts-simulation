@@ -98,7 +98,7 @@ def neighborhood(
             focal_indices.append(random_idx)
 
     for i in focal_indices:
-        radius: int = int(2 * n)
+        radius: int = int(2 * (n ** 0.7))
 
         j_candidates: set[int] = set()
 
