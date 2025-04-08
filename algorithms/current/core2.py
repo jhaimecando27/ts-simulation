@@ -27,7 +27,7 @@ def search(
 
         if val(nbhr_best) < val(soln_best):
             soln_best = nbhr_best.copy()
-            soln_best_tracker.append(val(soln_best))
+        soln_best_tracker.append(val(nbhr_best))
 
         tabu_list.append(move_best)
         if len(tabu_list) > tabu_tenure:

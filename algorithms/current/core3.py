@@ -19,7 +19,7 @@ def search(
 
         if val(nbhr) < val(soln_best):
             soln_best = nbhr.copy()
-            soln_best_tracker.append(val(soln_best))
+        soln_best_tracker.append(val(nbhr))
         soln_curr = nbhr.copy()
 
         tabu_list.append(move)
