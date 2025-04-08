@@ -33,6 +33,8 @@ def search(
         soln_curr = nbhr_best.copy()
 
         tabu_list.append(move_best)
+        if len(tabu_list) > tabu_tenure:
+            tabu_list.pop(0)
 
     return val(soln_best), soln_best_tracker
 
