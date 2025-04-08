@@ -1,0 +1,132 @@
+
+=====Result (core2)=====
+POI: 40 | Tenure: 10
+avg soln: 1934.44
+avg time: 0.04
+DS (CV): 0.01
+================
+
+POI: 40 | Tenure: 20
+avg soln: 1919.28
+avg time: 0.04
+DS (CV): 0.01
+================
+
+POI: 40 | Tenure: 30
+avg soln: 1962.81
+avg time: 0.04
+DS (CV): 0.03
+================
+
+POI: 80 | Tenure: 10
+avg soln: 3762.29
+avg time: 0.11
+DS (CV): 0.02
+================
+
+POI: 80 | Tenure: 20
+avg soln: 3739.04
+avg time: 0.11
+DS (CV): 0.02
+================
+
+POI: 80 | Tenure: 30
+avg soln: 3699.13
+avg time: 0.11
+DS (CV): 0.01
+================
+
+POI: 160 | Tenure: 10
+avg soln: 8290.88
+avg time: 0.37
+DS (CV): 0.0
+================
+
+POI: 160 | Tenure: 20
+avg soln: 8316.52
+avg time: 0.37
+DS (CV): 0.0
+================
+
+POI: 160 | Tenure: 30
+avg soln: 8314.08
+avg time: 0.27
+DS (CV): 0.0
+================
+
+
+=====Result (core3)=====
+POI: 40 | Tenure: 10
+avg soln: 1924.58
+avg time: 0.0
+DS (CV): 0.04
+================
+
+POI: 40 | Tenure: 20
+avg soln: 1941.94
+avg time: 0.0
+DS (CV): 0.03
+================
+
+POI: 40 | Tenure: 30
+avg soln: 1962.27
+avg time: 0.0
+DS (CV): 0.03
+================
+
+POI: 80 | Tenure: 10
+avg soln: 3782.28
+avg time: 0.01
+DS (CV): 0.01
+================
+
+POI: 80 | Tenure: 20
+avg soln: 3780.17
+avg time: 0.01
+DS (CV): 0.01
+================
+
+POI: 80 | Tenure: 30
+avg soln: 3751.45
+avg time: 0.01
+DS (CV): 0.02
+================
+
+POI: 160 | Tenure: 10
+avg soln: 8259.49
+avg time: 0.02
+DS (CV): 0.02
+================
+
+POI: 160 | Tenure: 20
+avg soln: 8245.25
+avg time: 0.02
+DS (CV): 0.02
+================
+
+POI: 160 | Tenure: 30
+avg soln: 8182.71
+avg time: 0.02
+DS (CV): 0.03
+================
+
+
+=====Result (Enhanced)=====
+POI: 40
+avg soln: 1080.37
+avg time: 0.16
+DS (CV): 0.25
+================
+
+POI: 80
+avg soln: 2190.57
+avg time: 0.45
+DS (CV): 0.23
+================
+
+POI: 160
+avg soln: 4752.66
+avg time: 2.5
+DS (CV): 0.26
+================
+
