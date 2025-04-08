@@ -17,32 +17,30 @@ def search(
 
     stagnant_ctr: int = 0
     stagnant_best: int = 0
+    improve_ctr: int = 0
 
     tabu_tenure: int = math.floor(len(soln_init) * 0.1)
-    improvement_rate: float = 0.0
+    adjustment_rate: float = 0.0
     solution_diversity_tracker: List[List[int]] = []
 
     for iter_ctr in range(iter_max):
 
-        solution_diversity_tracker.append(soln_curr.copy())
-        solution_diversity: float = len(
-            set(map(tuple, solution_diversity_tracker))
-        ) / len(solution_diversity_tracker)
+        if stagnant_ctr or improve_ctr > 10:
+            solution_diversity_tracker.append(soln_curr.copy())
+            unique = len(set(map(tuple, solution_diversity_tracker)))
+            total = max(1, len(solution_diversity_tracker))
+            solution_diversity = unique / total  # 0.0 to 1.0
 
-        if len(soln_best_tracker) > 1:
-            improvement_rate = abs(
-                (soln_best_tracker[-1] - soln_best_tracker[-2])
-                / (soln_best_tracker[-1] + 1e-10)
+            adjustment_rate = max(1, improve_ctr) / max(1, stagnant_ctr)
+
+            tabu_tenure = wave_tenure_adaptation(
+                soln_init=soln_init,
+                base_tenure=tabu_tenure,
+                iter_ctr=iter_ctr,
+                iter_max=iter_max,
+                solution_diversity=solution_diversity,
+                adjustment_rate=adjustment_rate,
             )
-
-        tabu_tenure = quantum_tenure_adaptation(
-            soln_init,
-            tabu_tenure,
-            iter_ctr,
-            iter_max,
-            solution_diversity,
-            improvement_rate,
-        )
 
         if stagnant_ctr:
             soln_curr = wave_resonance_perturbation(
@@ -54,14 +52,17 @@ def search(
 
         if val(nbhr_best) < val(soln_best):
             soln_best = nbhr_best.copy()
-            soln_best_tracker.append(val(soln_best))
 
             if stagnant_ctr > stagnant_best:
                 stagnant_best = stagnant_ctr
 
             stagnant_ctr = 0
+            improve_ctr += 1
         else:
             stagnant_ctr += 1
+            improve_ctr = 0
+
+        soln_best_tracker.append(val(nbhr_best))
 
         soln_curr = nbhr_best.copy()
         tabu_list.append(move_best)
@@ -206,23 +207,20 @@ def wave_resonance_perturbation(
 
     return perturbed_soln
 
-
-def quantum_tenure_adaptation(
-    soln_init: List[int],
+def wave_tenure_adaptation(
+    soln_init: list[int],
     base_tenure: int,
     iter_ctr: int,
     iter_max: int,
     solution_diversity: float,
-    improvement_rate: float,
+    adjustment_rate: float,
 ) -> int:
-    quantum_wave: float = math.sin(2 * math.pi * iter_ctr / iter_max)
+    n = len(soln_init)
+    wave = math.sin(2 * math.pi * iter_ctr / n)
 
-    entanglement_factor: float = (
-        solution_diversity * (1 + improvement_rate) * abs(quantum_wave)
-    )
+    stagnation_penalty = 1 / (n + adjustment_rate)
 
-    dynamic_tenure: int = int(
-        base_tenure * (1 + entanglement_factor * (1 - abs(quantum_wave)))
-    )
+    tenure_scale = (1 - stagnation_penalty * abs(wave)) * solution_diversity
+    adjusted_tenure = base_tenure * tenure_scale
 
-    return max(min(dynamic_tenure, len(soln_init) * 2), max(3, int(len(soln_init) * 2)))
+    return max(1, int(adjusted_tenure))
