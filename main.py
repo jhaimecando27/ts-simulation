@@ -1,3 +1,4 @@
+import csv
 import sys
 import time
 import os
@@ -13,6 +14,7 @@ from algorithms.enhancements import search
 final_output: str = ""
 current_timestamp: str = datetime.now().strftime("%m%d_%H%M%S")
 config.iter_max: int = 100
+test = []
 
 
 def run_core_simulation(core_module: Any, core_name: str) -> None:
@@ -47,7 +49,6 @@ def run_core_simulation(core_module: Any, core_name: str) -> None:
             soln_lst: List[float] = [
                 soln for run in list_soln_best_tracker for soln in run
             ]
-            soln_lst.sort()
 
             avg_soln: float = round(mean(soln_lst), 2)
             avg_time: float = round(mean(list_time), 2)
@@ -60,11 +61,25 @@ def run_core_simulation(core_module: Any, core_name: str) -> None:
             output += f"DS (CV): {cv}\n"
             output += "================\n\n"
 
+            test.append([
+                core_name,
+                config.pois[n],
+                list_time,
+                soln_lst,
+                config.tenures[j],
+            ])
+
     print()
     print("\nFinished\n\n")
     print(output)
 
     final_output += f"\n=====Result ({core_name})=====\n" + output
+
+    with open(f"{core_name}.csv", "w", newline="") as file:
+        writer = csv.writer(file)
+
+        for item in test:
+            writer.writerow(item)
 
 
 def run_hybrid_simulation() -> None:
@@ -95,7 +110,6 @@ def run_hybrid_simulation() -> None:
             list_time.append(e_time - s_time)
 
         soln_lst: List[float] = [soln for run in list_soln_best_tracker for soln in run]
-        soln_lst.sort()
 
         avg_soln: float = round(mean(soln_lst), 2)
         avg_time: float = round(mean(list_time), 2)
@@ -107,6 +121,15 @@ def run_hybrid_simulation() -> None:
         output += f"avg time: {avg_time}\n"
         output += f"DS (CV): {cv}\n"
         output += "================\n\n"
+
+        test.append(
+            [
+                "enhanced",
+                config.pois[n],
+                list_time,
+                soln_lst,
+            ]
+        )
 
     print()
     print("\nFinished\n\n")
@@ -129,3 +152,38 @@ if __name__ == "__main__":
 
     with open(output_file_path, "w", encoding="utf-8") as file:
         file.write(final_output)
+
+    with open("output-soln.csv", "w", newline="") as file:
+        writer = csv.writer(file)
+
+        # Create header row with Time(POI), Solution(POI) for each POI
+        header = []
+        for poi in range(len(test)):
+            if len(test[poi]) > 4:
+                header.extend([f"{test[poi][0]} - POI: {test[poi][1]} - Tenure: {test[poi][4]}", "Time"])
+            else:
+                header.extend([f"{test[poi][0]} - POI: {test[poi][1]}", "Time"])
+        writer.writerow(header)
+
+        # Determine the maximum number of data rows needed
+        max_rows = 0
+        for poi in range(len(test)):
+            rows_needed = max(len(test[poi][2]), len(test[poi][3]))
+            max_rows = max(max_rows, rows_needed)
+
+        # Write data rows
+        for row in range(max_rows):
+            row_data = []
+            for poi in range(len(test)):
+                if row < len(test[poi][3]):
+                    row_data.append(test[poi][3][row])
+                else:
+                    row_data.append("")  # Empty cell if no more solutions
+
+                # Add time (if available for this row)
+                if row < len(test[poi][2]):
+                    row_data.append(test[poi][2][row])
+                else:
+                    row_data.append("")
+
+            writer.writerow(row_data)
